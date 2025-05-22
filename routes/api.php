@@ -12,3 +12,4 @@ Route::get('/ping', function () {
 Route::post('/sensor', [SensorDataController::class, 'store']);
 Route::get('/sensor', [SensorDataController::class, 'index']);
 Route::get('/sensor-data', [SensorDataController::class, 'getAll']);
+Route::get('/sensor-data/latest', [SensorDataController::class, 'latest']);

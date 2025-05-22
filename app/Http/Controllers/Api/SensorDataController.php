@@ -44,6 +44,12 @@ public function getAll()
 {
     return response()->json(SensorData::orderBy('created_at')->get());
 }
+public function latest()
+{
+    $latest = SensorData::latest()->first();
+    return response()->json($latest);
+}
+
 
 
 }
