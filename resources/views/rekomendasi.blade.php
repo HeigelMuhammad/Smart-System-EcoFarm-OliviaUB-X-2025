@@ -1,12 +1,11 @@
 @extends('layouts.app') 
 @section('content')
-<x-sidebar />
 
-<div class="p-4 pt-10 sm:ml-64">
-    <h1 class="text-3xl font-bold mb-6 text-green-800">Rekomendasi Dosis Pupuk</h1>
+<div class="px-4 py-10 sm:ml-2">
+    <h1 class="text-3xl font-bold mb-6 text-black">Rekomendasi Dosis Pupuk</h1>
 
     {{-- Form Input Luas Lahan --}}
-    <form action="{{ route('rekomendasi') }}" method="GET" class="mb-8 max-w-md bg-white p-6 rounded-lg border border-green-400">
+    <form action="{{ route('rekomendasi') }}" method="GET" class="mb-8 max-w-md bg-white p-6 rounded-lg border border-grey-300">
         <label for="luas_lahan" class="block mb-2 font-semibold text-gray-700">Masukkan Luas Lahan (Meter Persegi):</label>
         <input 
             type="number" 
@@ -19,42 +18,87 @@
             class="border border-gray-300 p-2 rounded w-full mb-4 focus:outline-none focus:ring-2 focus:ring-green-400"
         >
         <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full">
-            Hitung Rekomendasi
+            Hitung Dosis Pupuk
         </button>
     </form>
 
     {{-- Hasil Sensor dan Rekomendasi --}}
     @if ($hasil)
-   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {{-- Kartu Sensor --}}
+    
+    {{-- Dosis Pupuk --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <div class="bg-white p-6 rounded-xl border border-gray-300">
-        <h2 class="text-md font-semibold text-black">Gas Metana (CH₄)</h2>
+        <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="flame" class="w-5 h-5 text-green-600"></i>
+            <h3 class="font-semibold text-green-700 text-lg">Urea</h3>
+        </div>
+        <p class="text-3xl font-bold text-black">{{ $dosisPupuk['urea'] }} <span class="text-sm font-normal">kg</span></p>
+        <p class="text-xs text-gray-500 mt-1">Setara untuk {{ $luasMeter }} m²</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl border border-gray-300">
+        <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="zap" class="w-5 h-5 text-blue-600"></i>
+            <h3 class="font-semibold text-blue-700 text-lg">ZA</h3>
+        </div>
+        <p class="text-3xl font-bold text-black">{{ $dosisPupuk['za'] }} <span class="text-sm font-normal">kg</span></p>
+        <p class="text-xs text-gray-500 mt-1">Setara untuk {{ $luasMeter }} m²</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl border border-gray-300">
+        <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="test-tube" class="w-5 h-5 text-purple-600"></i>
+            <h3 class="font-semibold text-purple-700 text-lg">SP-36</h3>
+        </div>
+        <p class="text-3xl font-bold text-black">{{ $dosisPupuk['sp36'] }} <span class="text-sm font-normal">kg</span></p>
+        <p class="text-xs text-gray-500 mt-1">Setara untuk {{ $luasMeter }} m²</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl border border-gray-300">
+        <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="droplet" class="w-5 h-5 text-red-600"></i>
+            <h3 class="font-semibold text-red-700 text-lg">KCl</h3>
+        </div>
+        <p class="text-3xl font-bold text-black">{{ $dosisPupuk['kcl'] }} <span class="text-sm font-normal">kg</span></p>
+        <p class="text-xs text-gray-500 mt-1">Setara untuk {{ $luasMeter }} m²</p>
+    </div>
+</div>
+
+
+    {{-- Kartu Sensor dan Rekomendasi Total --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-xl border border-gray-300">
+        <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="wind" class="w-5 h-5 text-yellow-500"></i>
+            <h2 class="text-md font-semibold text-black">Gas Metana (CH₄)</h2>
+        </div>
         <p class="text-4xl font-bold text-black mt-2">{{ $sensor->gas_metana }} %</p>
         <p class="text-xs text-gray-500 mt-2">Terakhir diperbarui: {{ $sensor->created_at }}</p>
     </div>
 
     <div class="bg-white p-6 rounded-xl border border-gray-300">
-        <h2 class="text-md font-semibold text-black">Suhu</h2>
+        <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="thermometer" class="w-5 h-5 text-blue-500"></i>
+            <h2 class="text-md font-semibold text-black">Suhu</h2>
+        </div>
         <p class="text-4xl font-bold text-black mt-2">{{ $sensor->suhu }} °C</p>
         <p class="text-xs text-gray-500 mt-2">Terakhir diperbarui: {{ $sensor->created_at }}</p>
     </div>
 
     <div class="bg-white p-6 rounded-xl border border-gray-300">
-        <h2 class="text-md font-semibold text-black">Kelembapan Tanah</h2>
+        <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="droplets" class="w-5 h-5 text-blue-600"></i>
+            <h2 class="text-md font-semibold text-black">Kelembapan Tanah</h2>
+        </div>
         <p class="text-4xl font-bold text-black mt-2">{{ $sensor->kelembapan_tanah }} %</p>
         <p class="text-xs text-gray-500 mt-2">Terakhir diperbarui: {{ $sensor->created_at }}</p>
     </div>
 
-    {{-- Koefisien Penyesuaian --}}
     <div class="bg-white p-6 rounded-xl border border-gray-300">
-        <h2 class="text-md font-semibold text-purple-600">Koefisien Penyesuaian (Kp)</h2>
-        <p class="text-4xl font-bold text-purple-700 mt-2">{{ $hasil['Kp'] }}</p>
-        <p class="text-xs text-gray-500 mt-2">Dihitung otomatis berdasarkan kondisi lahan</p>
-    </div>
-
-    {{-- Dosis Pupuk Direkomendasikan --}}
-    <div class="bg-white p-6 rounded-xl border border-gray-300">
-        <h2 class="text-md font-semibold text-emerald-600">Dosis Pupuk Direkomendasikan</h2>
+        <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600"></i>
+            <h2 class="text-md font-semibold text-emerald-600">Dosis Pupuk Direkomendasikan</h2>
+        </div>
         <p class="text-4xl font-bold text-emerald-700 mt-2">{{ $hasil['total_pupuk_kg'] * $luasMeter }} kg</p>
         <p class="text-xs text-gray-500 mt-2">Dosis optimal berdasarkan data sensor</p>
     </div>

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class Users extends Authenticatable
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -44,4 +44,10 @@ class Users extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function SensorData()
+{
+    return $this->hasMany(SensorData::class);
+}
+
 }

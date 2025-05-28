@@ -5,45 +5,74 @@
     <title>Dashboard Monitoring Padi Rendah Karbon</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" type="image/png" href="{{ asset('cleanx32.png') }}">
 </head>
-<body class="bg-gray-100">
-<x-sidebar />
+<script>
+    lucide.createIcons();
+</script>
 
+<body class="bg-gray-100">
+
+@extends('layouts.app') 
+@section('content')
 <!-- Main Content -->
-<div class="p-4 pt-10 sm:ml-64">
+<div class="p-4 pt-10  sm:ml-64">
     @php
         $latest = $data->first(); // ambil data sensor terbaru
     @endphp
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         <!-- Kelembapan Tanah -->
-        <div class="bg-white p-6 rounded-xl text-left border border-gray-300">
-            <h2 class="text-md font-semibold text-gray-500">Soil Moisture</h2>
-            <p class="text-4xl font-bold text-black mt-2" id="kelembapan_tanah">{{ $latest->kelembapan_tanah }}%</p>
-            <p class="text-xs text-gray-500 mt-2" id="waktu_kelembapan">Terakhir: {{ $latest->created_at }}</p>
+        <div class="bg-white p-6 rounded-xl text-left border border-gray-300 flex items-center gap-4">
+    <i data-lucide="droplet" class="w-10 h-10 text-green-500"></i>
+    <div>
+        <h2 class="text-md font-semibold text-gray-500">Soil Moisture</h2>
+        <p class="text-4xl font-bold text-black mt-2" id="kelembapan_tanah">{{ $latest->kelembapan_tanah }}%</p>
+        <p class="text-xs text-gray-500 mt-2" id="waktu_kelembapan">Terakhir: {{ $latest->created_at }}</p>
+    </div>
+</div>
 
-        </div>
 
         <!-- Suhu -->
-        <div class="bg-white p-6 rounded-xl text-left border border-gray-300">
-            <h2 class="text-md font-semibold text-gray-500">Temperature</h2>
-            <p class="text-4xl font-bold text-black mt-2" id="suhu">{{ $latest->suhu }}°C</p>
-            <p class="text-xs text-gray-500 mt-2" id="waktu_suhu">Terakhir: {{ $latest->created_at }}</p>
+        <div class="bg-white p-6 rounded-xl text-left border border-gray-300 flex items-center gap-4">
+    <i data-lucide="thermometer" class="w-10 h-10 text-blue-500"></i>
+    <div>
+        <h2 class="text-md font-semibold text-gray-500">Temperature</h2>
+        <p class="text-4xl font-bold text-black mt-2" id="suhu">{{ $latest->suhu }}°C</p>
+        <p class="text-xs text-gray-500 mt-2" id="waktu_suhu">Terakhir: {{ $latest->created_at }}</p>
+    </div>
+</div>
 
-        </div>
 
         <!-- Gas Metana -->
-        <div class="bg-white p-6 rounded-xl text-left border border-gray-300">
-            <h2 class="text-md font-semibold text-gray-500">Gas Metana (MQ4)</h2>
-            <p class="text-4xl font-bold text-black mt-2" id="gas_metana">{{ $latest->gas_metana}} %</p>
-            <p class="text-xs text-gray-500 mt-2" id="waktu_metana">Terakhir: {{ $latest->created_at }}</p>
-
-        </div>
+        <div class="bg-white p-6 rounded-xl text-left border border-gray-300 flex items-center gap-4">
+    <i data-lucide="wind" class="w-10 h-10 text-yellow-500"></i>
+    <div>
+        <h2 class="text-md font-semibold text-gray-500">Gas Metana (MQ4)</h2>
+        <p class="text-4xl font-bold text-black mt-2" id="gas_metana">{{ $latest->gas_metana }} %</p>
+        <p class="text-xs text-gray-500 mt-2" id="waktu_metana">Terakhir: {{ $latest->created_at }}</p>
     </div>
+</div>
+
+    </div>
+
+    <!-- Indikator Status Pompa -->
+<div class="bg-white border border-gray-300 rounded-lg p-4 mt-10 flex items-center gap-3 w-full max-w-sm">
+    <div id="pompa-icon" class="text-gray-400">
+        <i data-lucide="activity" class="w-6 h-6"></i>
+    </div>
+    <div>
+        <h2 class="text-sm text-gray-600">Status Pompa:</h2>
+        <p id="status-text" class="text-base font-semibold text-gray-700">Memuat...</p>
+    </div>
+</div>
+
 
     <div class="pt-4 mb-4">
         <label for="filter" class="block mb-2 text-sm font-medium text-gray-700">Grafik</label>
     </div>
+    
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Kelembapan -->
@@ -87,6 +116,8 @@
     </div>
 
 <script>
+     lucide.createIcons();
+
     let chartKelembapan, chartSuhu, chartMetana;
 
     async function updateLatestSensorData() {
@@ -216,6 +247,20 @@
     });
 
     //setInterval(updateAllCharts, 3000); // Perbarui tiap 3 detik
+
+    function fetchStatus() {
+      fetch('https://4b3b-202-47-188-225.ngrok-free.app/api/pompa-status')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("status").textContent = data.status;
+        })
+        .catch(error => {
+          document.getElementById("status").textContent = "Gagal mengambil status";
+        });
+    }
+
+    setInterval(fetchStatus, 3000); // refresh tiap 3 detik
+    fetchStatus();
 </script>
 
 </div>
